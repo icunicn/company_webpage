@@ -1,0 +1,64 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+*.log
+
+# --- Django ---
+# Keep app/migrations/*.py tracked (do NOT ignore migrations)
+db.sqlite3
+*.sqlite3
+local_settings.py
+media/
+# Collected static root (keep your source static/ folder tracked)
+staticfiles/
+
+# Environment files
+.env
+.env.*
+.secrets/
+
+# --- Virtual Environments ---
+.venv/
+venv/
+ENV/
+env/
+
+# --- Testing / Coverage / Caches ---
+.coverage*
+.pytest_cache/
+.tox/
+.mypy_cache/
+.pyre/
+.pytype/
+htmlcov/
+.cache/
+.ruff_cache/
+
+# --- Node / Frontend ---
+node_modules/
+dist/
+build/
+.next/
+.vite/
+.parcel-cache/
+.cache/
+coverage/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
