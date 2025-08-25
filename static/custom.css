@@ -1,0 +1,82 @@
+/* Breadcrumbs */
+.breadcrumbs {
+  background: linear-gradient(
+    90deg,
+    rgba(13, 110, 253, 0.06),
+    rgba(102, 16, 242, 0.03)
+  );
+  border-radius: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+.breadcrumbs h2 {
+  color: var(--bs-dark);
+  font-weight: 600;
+}
+.breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+  color: var(--bs-secondary);
+}
+
+/* Blog card box */
+.blog-card {
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-left: 6px solid var(--bs-primary);
+  background-color: var(--bs-body-bg, #fff);
+  border-radius: 0.6rem;
+  overflow: hidden;
+}
+
+/* Post image */
+.post-media .post-img {
+  max-height: 480px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Entry content */
+.entry-content {
+  line-height: 1.8;
+  color: #2b2b2b;
+}
+
+/* Author avatar */
+.author-avatar {
+  width: 44px;
+  height: 44px;
+  font-weight: 600;
+}
+
+/* Badges and meta */
+.entry-meta i {
+  margin-right: 0.35rem;
+  color: var(--bs-secondary);
+}
+.badge.bg-primary {
+  background-color: var(--bs-primary);
+  border-radius: 0.35rem;
+}
+
+/* Smaller devices adjustments */
+@media (max-width: 767.98px) {
+  .author-box {
+    gap: 0.5rem;
+  }
+  .breadcrumbs {
+    padding: 0.75rem;
+  }
+  .post-img {
+    max-height: 320px;
+  }
+}
+
+/* Subtle shadow */
+.blog-card.shadow-sm {
+  box-shadow: 0 8px 20px rgba(23, 24, 24, 0.06);
+}
+
+/* Make blockquotes inside blog content stand out */
+.entry-content blockquote {
+  border-left: 4px solid var(--bs-primary);
+  padding-left: 1rem;
+  color: #444;
+  margin: 1.25rem 0;
+}

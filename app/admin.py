@@ -1,5 +1,5 @@
 from django.contrib import admin
-from app.models import GeneralInfo
+from app.models import GeneralInfo, service, Testimonial, FrequentlyAskedQuestion, ContactFormLog, Blog, Author
 # Register your models here.
 @admin.register(GeneralInfo)
 class GeneralInfoAdmin(admin.ModelAdmin):
@@ -35,3 +35,57 @@ class GeneralInfoAdmin(admin.ModelAdmin):
     # def has_delete_permission(self, request, obj=None):
     #     # Prevent deletion of the GeneralInfo instance
     #     return False
+
+
+@admin.register(service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ["tittle", "description"]
+    search_fields = ["tittle"]
+
+
+@admin.register(Testimonial)
+class TestimonialAdmin(admin.ModelAdmin):
+    list_display = [
+        "username", 
+        "user_job", 
+        "display_rating_count",
+    ]
+
+    def display_rating_count(self, obj):
+        return '*' * obj.rating_count
+    
+    display_rating_count.short_description = "Rating"
+
+@admin.register(FrequentlyAskedQuestion)
+class FrequentlyAskedQuestionAdmin(admin.ModelAdmin):
+    list_display = ["question"]
+    search_fields = ["question"]
+    fieldsets = (
+        (None, {
+            'fields': ('question', 'answer')
+        }),
+    )
+
+@admin.register(ContactFormLog)
+class ContactFormLogAdmin(admin.ModelAdmin):
+    list_display = ['email', 'action_time', 'is_success', 'is_error']
+    
+    def has_add_permission(self, request):
+        return False
+    
+    def has_change_permission(self, request):
+        return False
+    
+    def has_delete_permission(self, request):
+        return False
+
+@admin.register(Author)
+class AuthorAdmin(admin.ModelAdmin):
+    list_display = ['first_name', 'last_name', 'country', 'joined_date']
+    
+
+@admin.register(Blog)
+class BlogAdmin(admin.ModelAdmin):
+    list_display = ['category', 'title', 'blog_image', 'created_at']
+    
+    

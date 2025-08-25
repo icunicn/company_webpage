@@ -1,0 +1,146 @@
+{% extends 'assets/main.html' %} {% load static %} {% block mainContent %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Replace hero header content with current blog title and optional subtitle.
+    var heroTitleEl = document.querySelector("#hero .container h2");
+    if (heroTitleEl) {
+      heroTitleEl.innerText = "{{ blog.title|escapejs }}";
+      // Optional: set subtitle to category (remove if not desired)
+      var heroSubtitle = document.querySelector("#hero .container p");
+      if (heroSubtitle) {
+        heroSubtitle.innerText = "{{ blog.category|default:''|escapejs }}";
+      }
+      // Hide hero action buttons to make header cleaner for blog page
+      document
+        .querySelectorAll("#hero .btn-get-started, #hero .btn-watch-video")
+        .forEach(function (el) {
+          el.style.display = "none";
+        });
+    }
+  });
+</script>
+
+<!-- ======= Blog Details Section ======= -->
+<section id="breadcrumbs" class="breadcrumbs py-3">
+  <div
+    class="container d-flex flex-column flex-md-row justify-content-between align-items-center"
+  >
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0 bg-transparent p-0">
+        <li class="breadcrumb-item"><a href="{% url 'Home' %}">Home</a></li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'Home' %}#recent-posts">Blog</a>
+        </li>
+        <li class="breadcrumb-item active text-muted" aria-current="page">
+          {{ blog.title }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section id="blog-details" class="blog-details py-5">
+  <div class="container" data-aos="fade-up">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <article class="card blog-card overflow-hidden shadow-sm">
+          {% if blog.blog_image %}
+          <div class="post-media">
+            {% if blog.blog_image|slice:":4" == "http" %}
+            <img
+              src="{{ blog.blog_image }}"
+              alt="{{ blog.title }}"
+              class="img-fluid w-100 post-img"
+            />
+            {% else %}
+            <img
+              src="{% static blog.blog_image %}"
+              alt="{{ blog.title }}"
+              class="img-fluid w-100 post-img"
+            />
+            {% endif %}
+          </div>
+          {% endif %}
+
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="badge bg-primary text-white me-2"
+                  >{{ blog.category }}</span
+                >
+                <h1 class="h3 mb-1 entry-title text-primary">
+                  {{ blog.title }}
+                </h1>
+                <div class="text-muted small entry-meta">
+                  {% if blog.author %}
+                  <span class="me-3"
+                    ><i class="bi bi-person"></i> {{ blog.author.first_name }}
+                    {{ blog.author.last_name }}</span
+                  >
+                  {% endif %}
+                  <span class="me-3"
+                    ><i class="bi bi-calendar3"></i>
+                    <time datetime="{{ blog.created_at|date:'Y-m-d' }}"
+                      >{{ blog.created_at }}</time
+                    ></span
+                  >
+                </div>
+              </div>
+              <div class="text-end d-none d-md-block">
+                <a
+                  href="#"
+                  class="text-decoration-none text-secondary me-2"
+                  title="Share on Twitter"
+                  ><i class="bi bi-twitter"></i
+                ></a>
+                <a
+                  href="#"
+                  class="text-decoration-none text-secondary me-2"
+                  title="Share on Facebook"
+                  ><i class="bi bi-facebook"></i
+                ></a>
+                <a
+                  href="#"
+                  class="text-decoration-none text-secondary"
+                  title="Share"
+                  ><i class="bi bi-share"></i
+                ></a>
+              </div>
+            </div>
+
+            <hr />
+
+            <div class="entry-content fs-6">{{ blog.content|safe }}</div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <a
+                href="{% url 'Home' %}#recent-posts"
+                class="btn btn-outline-primary"
+                >← Back to Blog</a
+              >
+              <div class="author-box d-flex align-items-center">
+                {% if blog.author %}
+                <div
+                  class="author-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                >
+                  {{ blog.author.first_name|slice:":1" }}{{ blog.author.last_name|slice:":1" }}
+                </div>
+                <div class="small text-muted">
+                  <div class="fw-bold">
+                    {{ blog.author.first_name }} {{ blog.author.last_name }}
+                  </div>
+                  <div>Author</div>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Blog Details Section -->
+
+{% endblock mainContent %}
