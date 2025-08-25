@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from ckeditor.fields import RichTextField
 # Create your models here.
 class GeneralInfo(models.Model):
     company_name = models.CharField(max_length=255, default='Company')
@@ -78,7 +78,7 @@ class Blog(models.Model):
     category = models.CharField(max_length=100, null=True, blank=True)
     title = models.CharField(max_length=255)
     author = models.ForeignKey(Author, on_delete=models.PROTECT, null=True, blank=True)
-    content = models.TextField()
+    content = RichTextField()
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

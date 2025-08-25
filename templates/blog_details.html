@@ -2,6 +2,9 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // Add blog page class to body
+    document.body.classList.add("is-blog-page");
+
     // Replace hero header content with current blog title and optional subtitle.
     var heroTitleEl = document.querySelector("#hero .container h2");
     if (heroTitleEl) {
@@ -17,6 +20,35 @@
         .forEach(function (el) {
           el.style.display = "none";
         });
+    }
+
+    // Initialize share button
+    const shareBtn = document.querySelector(".blog-share-btn");
+    if (shareBtn) {
+      shareBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        // Use Web Share API if available
+        if (navigator.share) {
+          navigator
+            .share({
+              title: "{{ blog.title|escapejs }}",
+              text: "Check out this blog post: {{ blog.title|escapejs }}",
+              url: window.location.href,
+            })
+            .catch(console.error);
+        } else {
+          // Fallback: toggle visibility of the share icons in the blog post
+          const shareIcons = document.querySelector(
+            ".text-end.d-none.d-md-block"
+          );
+          if (shareIcons) {
+            shareIcons.classList.toggle("d-none");
+            shareIcons.classList.toggle("d-md-block");
+            shareIcons.classList.toggle("d-block");
+          }
+        }
+      });
     }
   });
 </script>
@@ -124,7 +156,8 @@
                 <div
                   class="author-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
                 >
-                  {{ blog.author.first_name|slice:":1" }}{{ blog.author.last_name|slice:":1" }}
+                  {{ blog.author.first_name|slice:":1" }}{{
+                  blog.author.last_name|slice:":1" }}
                 </div>
                 <div class="small text-muted">
                   <div class="fw-bold">

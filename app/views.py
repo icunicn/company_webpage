@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.db import connection
 from django.conf import settings
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def write_sql_queries_to_file(file_path):
@@ -95,6 +96,7 @@ def blog_detail(request, blog_id):
 
     context = {
         "blog": blog,
+        "is_blog_page": True,  # Flag to indicate we're on a blog page
         # include site-wide info used by header/main
         "company_name": general_info.company_name if general_info else 'Company',
         "location": general_info.location if general_info else '',
@@ -108,3 +110,40 @@ def blog_detail(request, blog_id):
         "linkedin_url": general_info.linkedin_url if general_info else '',
     }
     return render(request, 'blog_details.html', context)
+
+def blog_list(request):
+    general_info = GeneralInfo.objects.first()
+    blogs = Blog.objects.all().order_by('-created_at')
+    
+    # Get unique categories for filtering
+    categories = Blog.objects.values_list('category', flat=True).distinct()
+    categories = [c for c in categories if c]  # Remove empty categories
+    
+    # Pagination
+    page = request.GET.get('page', 1)
+    paginator = Paginator(blogs, 9)  # Show 9 blogs per page
+    
+    try:
+        blogs = paginator.page(page)
+    except PageNotAnInteger:
+        blogs = paginator.page(1)
+    except EmptyPage:
+        blogs = paginator.page(paginator.num_pages)
+    
+    context = {
+        'blogs': blogs,
+        'categories': categories,
+        'is_blog_page': True,  # Add this flag
+        'company_name': general_info.company_name if general_info else 'Company',
+        'location': general_info.location if general_info else '',
+        'phone': general_info.phone if general_info else '',
+        'opening_hours': general_info.opening_hours if general_info else '',
+        'email': general_info.email if general_info else '',
+        'video_url': general_info.video_url if general_info else '',
+        'twitter_url': general_info.twitter_url if general_info else '',
+        'instagram_url': general_info.instagram_url if general_info else '',
+        'facebook_url': general_info.facebook_url if general_info else '',
+        'linkedin_url': general_info.linkedin_url if general_info else '',
+    }
+    
+    return render(request, 'blog.html', context)

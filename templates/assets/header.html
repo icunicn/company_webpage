@@ -16,28 +16,51 @@
     </div>
   </section><!-- End Top Bar -->
 
-  <header id="header" class="header d-flex align-items-center">
-
+  <header id="header" class="header d-flex align-items-center {% if request.path == '/blog/' %}blog-main-header{% endif %}">
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
+      <a href="{% url 'Home' %}" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="assets/img/logo.png" alt=""> -->
         <h1>{{company_name}}<span>.</span></h1>
       </a>
+      
+      {% if request.path == '/blog/' %}
+      <!-- Special navbar for blog main page -->
+      <nav id="navbar" class="navbar blog-main-navbar">
+        <ul>
+          <li><a href="{% url 'Home' %}"><i class="bi bi-house-door"></i> Home</a></li>
+          <li class="active"><a href="{% url 'blog_list' %}"><i class="bi bi-journal-richtext"></i> Blog</a></li>
+          <li><a href="#" class="blog-categories-dropdown">
+            <i class="bi bi-grid"></i> Categories <i class="bi bi-chevron-down ms-1 small"></i>
+          </a></li>
+          <li><a href="{% url 'Home' %}#contact"><i class="bi bi-envelope"></i> Contact</a></li>
+        </ul>
+      </nav>
+      {% elif is_blog_page %}
+      <!-- Simplified navbar for blog detail pages -->
+      <nav id="navbar" class="navbar blog-navbar">
+        <ul>
+          <li><a href="{% url 'Home' %}"><i class="bi bi-house-door"></i> Home</a></li>
+          <li><a href="{% url 'blog_list' %}"><i class="bi bi-journal-text"></i> Blog</a></li>
+          <li class="d-none d-md-block"><a href="#" class="blog-share-btn"><i class="bi bi-share"></i> Share</a></li>
+        </ul>
+      </nav>
+      {% else %}
+      <!-- Display full navbar on regular pages -->
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="#hero">Home</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#testimonials">Testimonials</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="blog.html">Blog</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#hero"><i class="bi bi-house-door"></i> Home</a></li>
+          <li><a href="#services"><i class="bi bi-gear"></i> Services</a></li>
+          <li><a href="#testimonials"><i class="bi bi-chat-quote"></i> Testimonials</a></li>
+          <li><a href="#faq"><i class="bi bi-question-circle"></i> FAQ</a></li>
+          <li><a href="{% url 'blog_list' %}"><i class="bi bi-journal-text"></i> Blog</a></li>
+          <li><a href="#contact"><i class="bi bi-envelope"></i> Contact</a></li>
         </ul>
       </nav><!-- .navbar -->
+      {% endif %}
 
       <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
       <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
-
     </div>
   </header><!-- End Header -->
   <!-- End Header -->

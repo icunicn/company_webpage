@@ -1,0 +1,233 @@
+{% extends 'assets/main.html' %} {% load static %} {% block mainContent %}
+
+<!-- ======= Blog Header ======= -->
+<section id="blog-header" class="blog-header py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <h1 class="display-4 fw-bold mb-2">Our Blog</h1>
+        <p class="lead text-muted">Latest insights, news, and updates from our team</p>
+      </div>
+      <div class="col-lg-4">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search articles..."
+            aria-label="Search articles"
+            id="blog-search"
+          />
+          <button class="btn btn-primary" type="button">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= Blog Section ======= -->
+<section id="blog" class="blog py-4">
+  <div class="container" data-aos="fade-up">
+    <!-- Category filters -->
+    <div class="blog-filters mb-5">
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-sm btn-outline-primary active" data-filter="all">
+          All
+        </button>
+        {% for category in categories %}
+        <button
+          class="btn btn-sm btn-outline-primary"
+          data-filter="{{ category }}"
+        >
+          {{ category }}
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Blog Posts Grid -->
+    <div class="row gy-4 posts-list">
+        {% for blog in blogs %}
+        <div
+            class="col-lg-4 col-md-6 blog-item"
+            data-category="{{ blog.category|default:'uncategorized' }}"
+        >
+            <article class="card h-100 border-0 shadow-sm">
+                {% if blog.blog_image %}
+                <div class="post-img position-relative overflow-hidden">
+                    {% if blog.blog_image|slice:":4" == "http" %}
+                    <img
+                        src="{{ blog.blog_image }}"
+                        alt="{{ blog.title }}"
+                        class="card-img-top"
+                    />
+                    {% else %}
+                    <img
+                        src="{% static blog.blog_image %}"
+                        alt="{{ blog.title }}"
+                        class="card-img-top"
+                    />
+                    {% endif %}
+                    {% if blog.category %}
+                    <div class="position-absolute top-0 start-0 mt-3 ms-3">
+                        <span class="badge bg-primary">{{ blog.category }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    <h3 class="card-title h5 mb-3">
+                        <a
+                            href="{% url 'blog_detail' blog_id=blog.id %}"
+                            class="text-decoration-none text-dark stretched-link"
+                        >{{ blog.title }}</a>
+                    </h3>
+
+                    <div class="card-text mb-3">
+                        <p>{{ blog.content|striptags|truncatewords:20 }}</p>
+                    </div>
+
+                    <div
+                        class="mt-auto d-flex justify-content-between align-items-center"
+                    >
+                        <div class="blog-author d-flex align-items-center">
+                            {% if blog.author %}
+                            <div
+                                class="author-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2"
+                                style="width: 32px; height: 32px; font-size: 0.8rem"
+                            >
+                                {{ blog.author.first_name|slice:":1" }}{{ blog.author.last_name|slice:":1" }}
+                            </div>
+                            <span class="small text-muted">
+                                {{ blog.author.first_name }} {{ blog.author.last_name }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <small class="text-muted">
+                            {{ blog.created_at|date:"M d, Y" }}
+                        </small>
+                    </div>
+                </div>
+            </article>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="py-5">
+                <i class="bi bi-journal-text display-1 text-muted"></i>
+                <h3 class="mt-3">No blog posts found</h3>
+                <p class="text-muted">Check back soon for new content!</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if blogs.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if blogs.has_previous %}
+            <li class="page-item">
+                <a
+                    class="page-link"
+                    href="?page={{ blogs.previous_page_number }}"
+                    aria-label="Previous"
+                >
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;</span>
+            </li>
+            {% endif %}
+            {% for i in blogs.paginator.page_range %}
+            {% if blogs.number == i %}
+            <li class="page-item active">
+                <span class="page-link">{{ i }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if blogs.has_next %}
+            <li class="page-item">
+                <a
+                    class="page-link"
+                    href="?page={{ blogs.next_page_number }}"
+                    aria-label="Next"
+                >
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Blog filtering script -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Category filtering
+    const filterButtons = document.querySelectorAll(".blog-filters button");
+    const blogItems = document.querySelectorAll(".blog-item");
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        // Remove active class from all buttons
+        filterButtons.forEach((btn) => btn.classList.remove("active"));
+        // Add active class to clicked button
+        this.classList.add("active");
+
+        const filter = this.getAttribute("data-filter");
+
+        blogItems.forEach((item) => {
+          if (filter === "all") {
+            item.style.display = "block";
+          } else {
+            const category = item.getAttribute("data-category");
+            if (category === filter) {
+              item.style.display = "block";
+            } else {
+              item.style.display = "none";
+            }
+          }
+        });
+      });
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById("blog-search");
+    if (searchInput) {
+      searchInput.addEventListener("keyup", function () {
+        const searchTerm = this.value.toLowerCase();
+
+        blogItems.forEach((item) => {
+          const title = item
+            .querySelector(".card-title")
+            .textContent.toLowerCase();
+          const content = item
+            .querySelector(".card-text p")
+            .textContent.toLowerCase();
+
+          if (title.includes(searchTerm) || content.includes(searchTerm)) {
+            item.style.display = "block";
+          } else {
+            item.style.display = "none";
+          }
+        });
+      });
+    }
+  });
+</script>
+{% endblock mainContent %}
+
